@@ -12,53 +12,37 @@
       overflow: hidden;
       height: 100%;
       width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
       font-family: "Poppins", sans-serif;
     }
 
     .container {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
       text-align: center;
       animation: fadeIn 1.2s ease-out forwards;
     }
 
-    .circle {
-      width: 130px;
-      height: 130px;
-      border: 5px solid rgba(255, 215, 0, 0.6); /* kuning lembut */
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0, 80, 255, 0.25); /* biru lembut transparan */
-      box-shadow: 0 0 20px rgba(0, 80, 255, 0.3);
-      margin-bottom: 20px;
-      animation: pulse 2.5s infinite;
-    }
-
-    .icon {
-      font-size: 50px;
-      color: #ffd700; /* kuning emas */
-      animation: bounce 2s infinite;
+    .logo {
+      width: 240px; /* atur ukuran logo */
+      height: auto;
+      animation: bounce 2.5s infinite;
     }
 
     h1 {
       font-size: 28px;
       font-weight: 700;
-      color: #0050ff; /* biru utama */
+      color: #000000; /* biru utama */
       text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
-      margin: 0;
+      margin-top: 15px;
       letter-spacing: 1px;
     }
 
     p {
       font-size: 16px;
-      color: #ffd700; /* kuning cerah */
-      margin-top: 10px;
+      color: #000000; /* kuning cerah */
+      margin-top: 6px;
       opacity: 0.9;
       text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     }
@@ -68,23 +52,16 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.1); opacity: 0.7; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+      50% { transform: translateY(-12px); }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="circle">
-      <div class="icon">🎤</div>
-    </div>
+    <!-- Ganti src dengan nama file logo Bang Robby -->
+    <img src="logo-levelup.png" alt="Level Up Your Show" class="logo" />
     <h1>Level Up Your Show</h1>
     <p>Present Like a Pro</p>
   </div>
