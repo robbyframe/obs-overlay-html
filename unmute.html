@@ -1,0 +1,355 @@
+
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unmute Overlay</title>
+<style>
+body {
+    zoom: 3;
+    height: 480px;
+    width: 480px;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    margin: 0; /* Remove default body margin */
+}
+
+.button-wrapper {
+    background-color: rgba(0, 0, 0, .95);
+    display: inline-block;
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out; /* Smooth transform transition */
+}
+
+/* Adding a click animation to button-wrapper */
+@keyframes click-shrink-expand {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.9); /* Shrink */
+    }
+    100% {
+        transform: scale(1); /* Expand back to original size */
+    }
+}
+
+/* Applying the animation to the button-wrapper */
+.button-wrapper:active, .button-wrapper.active {
+    animation: click-shrink-expand 0.2s ease-in-out; /* 0.2s duration for the animation */
+}
+
+button.reaction {
+    border-style: initial;
+    border-width: 0;
+    padding: 4px 0;
+    text-transform: none;
+    transition: transform 0.2s ease-in-out; /* Smooth transform transition */
+}
+
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+.inherited-styles-for-exported-element {
+    font-family: system-ui, "SF Pro", "Segoe UI", "Almaden Sans", Roboto, Ubuntu, Helvetica, Arial;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+}
+
+svg {
+    vertical-align: text-top;
+}
+
+button.reaction:focus:not(:focus-visible) {
+    outline: 0;
+}
+
+[type=button], button.reaction {
+    appearance: button;
+}
+
+[type=button]:not(:disabled), button.reaction:not(:disabled) {
+    cursor: pointer;
+}
+
+span {
+    display: inline-block;
+}
+
+.ax-outline {
+    outline: 2px solid transparent;
+    transition: all .2s ease-in;
+    transition-behavior: normal;
+    outline-offset: 1px;
+}
+
+.ax-outline:focus {
+    outline: 1px solid #fff;
+    outline-offset: -1px;
+}
+
+.footer-button-base__button {
+    position: relative;
+    height: 51px;
+    cursor: pointer;
+    background-color: transparent;
+    width: 80px; /* Fixed width */
+    border-radius: 8px;
+    margin: 0px 0;
+    color: #fff;
+    display: flex; /* Use flex layout */
+    flex-direction: column; /* Stack items vertically */
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-button-base__button:hover {
+    background-color: rgba(255, 255, 255, .09);
+    color: rgba(255, 255, 255, .8);
+}
+
+.footer-button-base__button:focus {
+    background-color: rgba(255, 255, 255, .09);
+    color: rgba(255, 255, 255, .8);
+}
+
+.footer-button-base__button:active {
+    background-color: rgba(255, 255, 255, .18);
+    color: rgba(255, 255, 255, .8);
+}
+
+.footer-button-base__img-layer {
+    align-items: center;
+    display: flex;
+    height: 24px;
+    justify-content: center;
+    margin-bottom: 3px;
+    position: relative;
+    transition: all .2s ease-in;
+    transition-behavior: normal;
+}
+
+.footer-button-base__button-label {
+    font-size: 12px;
+    line-height: 10px;
+    overflow: hidden;
+    transition: all 0.2s ease-in;
+    text-wrap: nowrap;
+    white-space: nowrap; /* Prevent text from wrapping */
+    margin: 0px 0 0 0; /* Adjust margins to prevent overflow */
+    max-width: 90%; /* Ensure text fits within the button */
+    text-overflow: ellipsis;
+    word-break: break-word;
+    text-align: center; /* Center the text */
+}
+
+.footer-button__button--no-opacity:active {
+    opacity: 1 !important;
+}
+
+button.picker {
+  border-style: initial;
+  border-width: 0;
+  font-family: inherit;
+  line-height: inherit;
+  margin-bottom: 0;
+  margin-right: 0;
+  margin-top: 0;
+  padding: 0;
+  text-transform: none;
+}
+
+button.picker:active, button.picker.active {
+    animation: click-shrink-expand 0.2s ease-in-out; /* 0.2s duration for the animation */
+}
+
+*, ::after, ::before {
+  box-sizing: border-box;
+}
+
+.inherited-styles-for-exported-element {
+  color: rgba(255, 255, 255, .5);
+  cursor: default;
+  font-family: system-ui, "SF Pro", "Segoe UI", "Almaden Sans", Roboto, Ubuntu, Helvetica, Arial;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+}
+
+svg {
+  vertical-align: middle;
+}
+
+button.picker:focus:not(:focus-visible) {
+  outline: 0;
+}
+
+[type=button], button.picker {
+  appearance: button;
+}
+
+[type=button]:not(:disabled), button.picker:not(:disabled) {
+  cursor: pointer;
+}
+
+.ax-outline {
+  outline: 2px solid transparent;
+  transition: all .2s ease-in;
+  transition-behavior: normal;
+  outline-offset: 1px;
+}
+
+.ax-outline:focus {
+  outline: 1px solid #fff;
+  outline-offset: -1px;
+}
+
+
+.simulated-cursor {
+    width: 20px;
+    height: 20px;
+    z-index: 1000000000000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none; /* Make sure the cursor doesn't block hover events */
+    transform: translate(-50%, -50%);
+    transition: transform 0.8s ease-in-out;
+}
+
+.inherited-styles-for-exported-element {
+  color: rgba(255, 255, 255, .5);
+  font-family: system-ui, "SF Pro", "Segoe UI", "Almaden Sans", Roboto, Ubuntu, Helvetica, Arial;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+}
+
+svg {
+  vertical-align: middle;
+}
+
+.lazy-svg-icon__icon {
+  pointer-events: none;
+}
+
+</style>
+</head>
+<body>
+
+    <div class="simulated-cursor" style="transform: translate(872.5px, 829px);">
+    <svg width="40" height="40" viewBox="0 0 716 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M490.731 740.819H333.157C235.847 740.819 175.224 627.61 173.038 623.442L63.2086 401.184C55.6293 385.848 61.9086 367.625 77.5045 359.695C86.1002 355.322 93.581 354.877 101.763 358.229C134.385 371.603 166.408 436.055 178.919 473.515L188.413 502.11L239.164 484.151V88.5452C239.164 72.252 252.416 59 268.709 59C285.002 59 298.254 72.252 298.254 88.5452V429.299H298.79H357.344H357.88V279.604C357.88 263.11 372.645 248.089 388.859 248.089C405.649 248.089 420.374 261.896 420.374 277.634V336.724V439.148H479.464V336.724C479.464 320.431 492.716 307.179 509.009 307.179C525.303 307.179 538.555 320.431 538.555 336.724V401.724V466.723H597.645V401.724C597.645 385.431 610.897 372.179 627.19 372.179C643.483 372.179 656.735 385.431 656.735 401.724V443.981H656.873L656.972 573.397C656.968 665.716 582.392 740.819 490.731 740.819Z" fill="white"></path>
+    <path d="M715.266 410.016V401.814C715.266 352.939 675.502 313.179 626.63 313.179C615.592 313.179 605.027 315.223 595.269 318.926C586.977 278.599 551.2 248.179 508.45 248.179C496.841 248.179 485.759 250.444 475.592 254.522C464.865 217.303 429.241 189.089 388.3 189.089C377.277 189.089 366.649 191.22 356.785 195.061V88.6355C356.785 39.7599 317.021 0 268.149 0C219.278 0 179.514 39.7599 179.514 88.6355V349.653C164.001 329.842 145.348 312.576 123.697 303.677C99.537 293.75 74.1124 294.935 50.1612 307.112C6.11132 329.511 -12.0491 383.492 9.67644 427.451L119.781 650.273C122.893 656.387 197.509 800 332.597 800H490.171C614.418 800 715.498 698.388 715.498 573.464L715.376 410.016H715.266ZM490.175 740.91H332.601C235.291 740.91 174.668 627.701 172.482 623.533L62.6529 401.274C55.0735 385.938 61.3529 367.715 76.9488 359.785C85.5445 355.412 93.0253 354.967 101.207 358.32C133.829 371.694 165.852 436.146 178.364 473.605L187.857 502.201L238.608 484.241V88.6355C238.608 72.3423 251.86 59.0903 268.153 59.0903C284.446 59.0903 297.698 72.3423 297.698 88.6355V429.39H298.234H356.789H357.324V279.694C357.324 263.2 372.089 248.179 388.303 248.179C405.093 248.179 419.818 261.987 419.818 277.724V336.815V439.238H478.909V336.815C478.909 320.522 492.161 307.27 508.454 307.27C524.747 307.27 537.999 320.522 537.999 336.815V401.814V466.813H597.089V401.814C597.089 385.521 610.341 372.269 626.634 372.269C642.928 372.269 656.18 385.521 656.18 401.814V444.072H656.317L656.416 573.487C656.412 665.806 581.836 740.91 490.175 740.91Z" fill="black"></path>
+    </svg>
+    </div>
+    
+    <div class="button-wrapper">
+    <button type="button" id="buttonWrapper" class="reaction footer-button-base__button ax-outline footer-button__button--no-opacity footer-button__button inherited-styles-for-exported-element" aria-label="Reactions">
+      <div class="footer-button-base__img-layer">
+        <svg id="micOff" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="SvgmicOff" style="display: block;"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.145 3.816a.617.617 0 0 0 .167-.61A4.495 4.495 0 0 0 12 0C9.51 0 7.5 2.01 7.5 4.5v7.125c0 .284.34.43.546.236l.719-.678A.75.75 0 0 0 9 10.637V4.5c0-1.65 1.35-3 3-3s3 1.35 3 3c0 .17.206.255.326.135l.819-.819ZM16.5 6.29 15 7.79V12c0 1.65-1.35 3-3 3a3.008 3.008 0 0 1-2.637-1.574L8.269 14.52A4.491 4.491 0 0 0 12 16.5c2.49 0 4.5-2.01 4.5-4.5V6.29ZM5.915 14.046a.857.857 0 0 0 .217-.789A6.028 6.028 0 0 1 6 12c0-.42-.33-.75-.75-.75s-.75.33-.75.75c0 .045 0 .105.015.15.009.553.078 1.091.2 1.608.131.548.802.686 1.2.288Zm.214 2.614 1.066-1.066A5.99 5.99 0 0 0 12 18c3.315 0 6-2.685 6-6 0-.42.33-.75.75-.75s.75.33.75.75c0 .045 0 .105-.015.15-.06 3.81-2.985 6.93-6.735 7.305V22.5h3c.42 0 .75.33.75.75s-.33.75-.75.75h-7.5c-.42 0-.75-.33-.75-.75s.33-.75.75-.75h3v-3.045a7.489 7.489 0 0 1-5.12-2.795Z" fill="#fff"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M20.78 2.22a.75.75 0 0 1 0 1.06L3.53 20.53a.75.75 0 0 1-1.06-1.06L19.72 2.22a.75.75 0 0 1 1.06 0Z" fill="#F05"></path></svg>
+        <svg id="micOn" style="display: none;" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="SvgmicOn"><path d="M7.5 4.5C7.5 2.01 9.51 0 12 0s4.5 2.01 4.5 4.5V12c0 2.49-2.01 4.5-4.5 4.5S7.5 14.49 7.5 12V4.5ZM12 15c1.65 0 3-1.35 3-3V4.5c0-1.65-1.35-3-3-3s-3 1.35-3 3V12c0 1.65 1.35 3 3 3Z" fill="#fff"></path>
+          <path d="M19.485 12.15c.015-.045.015-.105.015-.15 0-.42-.33-.75-.75-.75s-.75.33-.75.75c0 3.315-2.685 6-6 6s-6-2.685-6-6c0-.42-.33-.75-.75-.75s-.75.33-.75.75c0 .045 0 .105.015.15.06 3.81 2.985 6.93 6.735 7.305V22.5h-3c-.42 0-.75.33-.75.75s.33.75.75.75h7.5c.42 0 .75-.33.75-.75s-.33-.75-.75-.75h-3v-3.045c3.75-.375 6.675-3.495 6.735-7.305Z" fill="#fff"></path></svg>
+      </div><span class="footer-button-base__button-label">Unmute</span>
+    </button>
+    </div>
+    
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Function to load translations from a JSON file
+    async function loadTranslations() {
+        try {
+            const response = await fetch('/assets/translations.json');
+            const translations = await response.json();
+
+            // Extract the language code from the URL hash
+            let lang = 'en'; // Default language
+            const supportedLanguages = Object.keys(translations); // ['en', 'pt', 'fr', 'ru', ...]
+
+            // Get the language code from the hash, stripping the '#' symbol
+            const hashLang = window.location.hash.substring(1);
+            if (supportedLanguages.includes(hashLang)) {
+                lang = hashLang;
+            }
+
+            // Get the translation data for the selected language
+            const languageData = translations[lang];
+
+            // Function to update the button label
+            function updateButtonLabel() {
+                const micOff = document.getElementById('micOff');
+                const micOn = document.getElementById('micOn');
+                const labelElement = document.querySelector('.footer-button-base__button-label');
+
+                if (languageData && labelElement) {
+                    if (micOff && micOff.style.display === 'block') {
+                        labelElement.innerText = languageData.unmute || 'unmute';
+                    } else if (micOn && micOn.style.display === 'block') {
+                        labelElement.innerText = languageData.mute || 'mute';
+                    }
+                }
+            }
+
+            // Observe changes in micOff and micOn elements
+            const observer = new MutationObserver(updateButtonLabel);
+            const config = { attributes: true, attributeFilter: ['style'] };
+
+            const micOffElement = document.getElementById('micOff');
+            const micOnElement = document.getElementById('micOn');
+
+            if (micOffElement) observer.observe(micOffElement, config);
+            if (micOnElement) observer.observe(micOnElement, config);
+
+            // Update button label initially
+            updateButtonLabel();
+
+            // Simulated cursor and button click logic
+            const cursor = document.querySelector(".simulated-cursor");
+            cursor.style.transform = `translate(${window.innerWidth / 2}px, ${window.innerHeight - 30}px)`;
+
+            const buttonWrapper = document.getElementById('buttonWrapper');
+            const buttonRect = buttonWrapper.getBoundingClientRect();
+
+            setTimeout(() => {
+                // Move the cursor to the buttonWrapper
+                cursor.style.transform = `translate(${buttonRect.left + window.pageXOffset + 45}px, ${buttonRect.top + window.pageYOffset + 15}px)`;
+
+                // Simulate a click
+                setTimeout(() => {
+                    const buttonWrapperElement = document.querySelector('.button-wrapper');
+                    buttonWrapperElement.classList.add('active');
+
+                    // Update the button text dynamically
+                    updateButtonLabel();
+
+                    setTimeout(() => {
+                        document.getElementById('micOff').style.display = "none";
+                        document.getElementById('micOn').style.display = "block";
+
+                        // Return the cursor to the initial position (optional)
+                        cursor.style.transform = `translate(${window.innerWidth / 2}px, ${window.innerHeight - 30}px)`;
+                        buttonWrapper.click();
+                    }, 250);
+                }, 1000);
+            }, 2000); // Delay for the initial movement and click
+
+        } catch (error) {
+            console.error('Error loading translations:', error);
+        }
+    }
+
+    // Run the function to load and apply translations
+    loadTranslations();
+
+    // Optional: Re-apply translations when the hash changes
+    window.addEventListener('hashchange', loadTranslations);
+});
+</script>
+      
+</body></html>
