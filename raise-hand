@@ -1,0 +1,911 @@
+
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hands On Overlay</title>
+<style>
+body {
+    zoom: 3;
+    height: 480px;
+    width: 480px;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    margin: 0; /* Remove default body margin */
+}
+
+.button-wrapper {
+    background-color: rgba(0, 0, 0, .95);
+    display: inline-block;
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out; /* Smooth transform transition */
+}
+
+/* Adding a click animation to button-wrapper */
+@keyframes click-shrink-expand {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.9); /* Shrink */
+    }
+    100% {
+        transform: scale(1); /* Expand back to original size */
+    }
+}
+
+/* Applying the animation to the button-wrapper */
+.button-wrapper:active, .button-wrapper.active {
+    animation: click-shrink-expand 0.2s ease-in-out; /* 0.2s duration for the animation */
+}
+
+button.reaction {
+    border-style: initial;
+    border-width: 0;
+    padding: 4px 0;
+    text-transform: none;
+    transition: transform 0.2s ease-in-out; /* Smooth transform transition */
+}
+
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+.inherited-styles-for-exported-element {
+    font-family: system-ui, "SF Pro", "Segoe UI", "Almaden Sans", Roboto, Ubuntu, Helvetica, Arial;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+}
+
+svg {
+    vertical-align: middle;
+}
+
+button.reaction:focus:not(:focus-visible) {
+    outline: 0;
+}
+
+[type=button], button.reaction {
+    appearance: button;
+}
+
+[type=button]:not(:disabled), button.reaction:not(:disabled) {
+    cursor: pointer;
+}
+
+span {
+    display: inline-block;
+}
+
+.ax-outline {
+    outline: 2px solid transparent;
+    transition: all .2s ease-in;
+    transition-behavior: normal;
+    outline-offset: 1px;
+}
+
+.ax-outline:focus {
+    outline: 1px solid #fff;
+    outline-offset: -1px;
+}
+
+.footer-button-base__button {
+    background-color: transparent;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    height: 48px;
+    margin: 1px 0;
+    max-width: 160px;
+    min-width: 80px;
+    position: relative;
+    transition: transform 0.2s ease-in-out;
+}
+
+.footer-button-base__button:hover {
+    background-color: rgba(255, 255, 255, .09);
+    color: rgba(255, 255, 255, .8);
+}
+
+.footer-button-base__button:focus {
+    background-color: rgba(255, 255, 255, .09);
+    color: rgba(255, 255, 255, .8);
+}
+
+.footer-button-base__button:active {
+    background-color: rgba(255, 255, 255, .18);
+    color: rgba(255, 255, 255, .8);
+}
+
+.footer-button-base__img-layer {
+    align-items: center;
+    display: flex;
+    height: 24px;
+    justify-content: center;
+    margin-bottom: 3px;
+    position: relative;
+    transition: all .2s ease-in;
+    transition-behavior: normal;
+}
+
+.footer-button-base__button-label {
+    font-size: 12px;
+    line-height: 16px;
+    overflow: hidden;
+    transition: all .2s ease-in;
+    transition-behavior: normal;
+    text-wrap: nowrap;
+    white-space-collapse: collapse;
+    margin: 0 12px;
+    max-width: 120px;
+    text-overflow: ellipsis;
+    word-break: break-all;
+}
+
+.footer-button__button--no-opacity:active {
+    opacity: 1 !important;
+}
+
+button.picker {
+  border-style: initial;
+  border-width: 0;
+  font-family: inherit;
+  line-height: inherit;
+  margin-bottom: 0;
+  margin-right: 0;
+  margin-top: 0;
+  padding: 0;
+  text-transform: none;
+}
+
+button.picker:active, button.picker.active {
+    animation: click-shrink-expand 0.2s ease-in-out; /* 0.2s duration for the animation */
+}
+
+*, ::after, ::before {
+  box-sizing: border-box;
+}
+
+.inherited-styles-for-exported-element {
+  color: rgba(255, 255, 255, .5);
+  cursor: default;
+  font-family: system-ui, "SF Pro", "Segoe UI", "Almaden Sans", Roboto, Ubuntu, Helvetica, Arial;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+}
+
+svg {
+  vertical-align: middle;
+}
+
+button.picker:focus:not(:focus-visible) {
+  outline: 0;
+}
+
+[type=button], button.picker {
+  appearance: button;
+}
+
+[type=button]:not(:disabled), button.picker:not(:disabled) {
+  cursor: pointer;
+}
+
+.ax-outline {
+  outline: 2px solid transparent;
+  transition: all .2s ease-in;
+  transition-behavior: normal;
+  outline-offset: 1px;
+}
+
+.ax-outline:focus {
+  outline: 1px solid #fff;
+  outline-offset: -1px;
+}
+
+.lazy-svg-icon__icon {
+  pointer-events: none;
+}
+
+.reaction-simple-picker__container {
+  opacity: 0;
+  background: transparent;
+  transition: opacity 0.2s ease-in-out;
+  position: absolute;
+  top: 120px;
+  background-color: rgba(0, 0, 0, .8);
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 12px;
+  box-shadow: rgba(0, 0, 0, .2) 0 6.14232px 18.427px;
+  padding: 8px;
+}
+
+.reaction-simple-picker__row {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 8px;
+}
+
+.reaction-simple-picker__row--last {
+  margin-bottom: 0;
+}
+
+.reaction-simple-picker__content-wrapper {
+  align-items: center;
+  display: flex;
+  flex-basis: 100%;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+}
+
+.reaction-simple-picker__tooltip-wrapper {
+  height: 100%;
+  width: 100%;
+}
+
+.reaction-simple-picker__tooltip-wrapper[data-tooltip]::before {
+  border-radius: 6px;
+  left: 50%;
+  pointer-events: none;
+  transform: translate(-50%);
+  transition: all .15s;
+  text-wrap: nowrap;
+  white-space-collapse: collapse;
+  transition-behavior: normal;
+  content: attr(data-tooltip);
+  opacity: 0;
+  position: absolute;
+  top: 0;
+}
+
+.reaction-simple-picker__tooltip-wrapper[data-tooltip]:hover::before, .reaction-simple-picker__tooltip-wrapper[data-tooltip].hovered::before {
+  background-color: #242424;
+  border: .5px solid rgba(255, 255, 255, .09);
+  color: #fff;
+  font-size: 13px;
+  min-height: 24px;
+  opacity: 1;
+  padding: 4px 8px;
+  top: -104%;
+}
+
+.reaction-simple-picker__block {
+  background-color: rgba(255, 255, 255, .09);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  height: 32px;
+  margin-left: 8px;
+  position: relative;
+}
+
+.reaction-simple-picker__block[data-tooltip]:focus>[data-tooltip]::before {
+  background-color: #242424;
+  border: .5px solid rgba(255, 255, 255, .09);
+  color: #fff;
+  font-size: 13px;
+  min-height: 24px;
+  opacity: 1;
+  padding: 4px 8px;
+  top: -104%;
+}
+
+.reaction-simple-picker__block[data-tooltip]::before {
+  content: "";
+  opacity: 0;
+  position: absolute;
+  transition: all .15s;
+  transition-behavior: normal;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid rgba(255, 255, 255, .18);
+  height: 0;
+  margin-left: -1px;
+  pointer-events: none;
+  top: 0;
+  width: 0;
+}
+
+.reaction-simple-picker__block[data-tooltip]:focus::before, .reaction-simple-picker__block[data-tooltip]:hover::before,
+.reaction-simple-picker__block[data-tooltip]:focus::before, .reaction-simple-picker__block[data-tooltip].hovered::before {
+  margin-left: -10px;
+  opacity: 1;
+  top: -11px;
+}
+
+.reaction-simple-picker__block[data-tooltip]::after {
+  content: "";
+  opacity: 0;
+  position: absolute;
+  transition: all .15s;
+  transition-behavior: normal;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 9px solid #242424;
+  height: 0;
+  pointer-events: none;
+  top: 0;
+  width: 0;
+}
+
+.reaction-simple-picker__block[data-tooltip]:focus::after, .reaction-simple-picker__block[data-tooltip]:hover::after,
+.reaction-simple-picker__block[data-tooltip]:focus::after, .reaction-simple-picker__block[data-tooltip].hovered::after {
+  margin-left: -9px;
+  opacity: 1;
+  top: -11px;
+}
+
+.reaction-simple-picker__block:hover,
+.reaction-simple-picker__block.hovered {
+  background-color: rgba(255, 255, 255, .18);
+}
+
+.reaction-simple-picker__block:focus {
+  background-color: rgba(255, 255, 255, .18);
+}
+
+.reaction-simple-picker__block:active {
+  background-color: rgba(255, 255, 255, .27);
+}
+
+.reaction-simple-picker__block--reaction {
+  background-color: transparent;
+  width: 32px;
+}
+
+.reaction-simple-picker__block--reaction:hover,
+.reaction-simple-picker__block--reaction.hovered {
+  background-color: rgba(255, 255, 255, .09);
+}
+
+.reaction-simple-picker__block--reaction:focus {
+  background-color: rgba(255, 255, 255, .09);
+}
+
+.reaction-simple-picker__block--reaction:active {
+  background-color: rgba(255, 255, 255, .18);
+}
+
+.reaction-simple-picker__block--raise-hand {
+  width: 272px;
+}
+
+.reaction-simple-picker__block--first {
+  margin-left: 0;
+}
+
+.simulated-cursor {
+    width: 20px;
+    height: 20px;
+    z-index: 1000000000000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none; /* Make sure the cursor doesn't block hover events */
+    transform: translate(-50%, -50%);
+    transition: transform 0.8s ease-in-out;
+}
+
+.inherited-styles-for-exported-element {
+  color: rgba(255, 255, 255, .5);
+  font-family: system-ui, "SF Pro", "Segoe UI", "Almaden Sans", Roboto, Ubuntu, Helvetica, Arial;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+}
+
+svg {
+  vertical-align: middle;
+}
+
+.lazy-svg-icon__icon {
+  pointer-events: none;
+}
+
+.nonverbal-feedback-container--emoji-only {
+  opacity: 0;
+  align-items: center;
+  background-color: rgba(0, 0, 0, .95);
+  border-radius: 16px;
+  top: 165px;
+  display: flex;
+  flex-direction: row;
+  height: 44px;
+  justify-content: center;
+  position: absolute;
+  width: 44px;
+  z-index: -1;
+}
+
+.emoji-container {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+</style>
+</head>
+<body>
+
+<div class="simulated-cursor" style="transform: translate(645px, 660.5px);">
+<svg width="40" height="40" viewBox="0 0 716 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M490.731 740.819H333.157C235.847 740.819 175.224 627.61 173.038 623.442L63.2086 401.184C55.6293 385.848 61.9086 367.625 77.5045 359.695C86.1002 355.322 93.581 354.877 101.763 358.229C134.385 371.603 166.408 436.055 178.919 473.515L188.413 502.11L239.164 484.151V88.5452C239.164 72.252 252.416 59 268.709 59C285.002 59 298.254 72.252 298.254 88.5452V429.299H298.79H357.344H357.88V279.604C357.88 263.11 372.645 248.089 388.859 248.089C405.649 248.089 420.374 261.896 420.374 277.634V336.724V439.148H479.464V336.724C479.464 320.431 492.716 307.179 509.009 307.179C525.303 307.179 538.555 320.431 538.555 336.724V401.724V466.723H597.645V401.724C597.645 385.431 610.897 372.179 627.19 372.179C643.483 372.179 656.735 385.431 656.735 401.724V443.981H656.873L656.972 573.397C656.968 665.716 582.392 740.819 490.731 740.819Z" fill="white"></path>
+<path d="M715.266 410.016V401.814C715.266 352.939 675.502 313.179 626.63 313.179C615.592 313.179 605.027 315.223 595.269 318.926C586.977 278.599 551.2 248.179 508.45 248.179C496.841 248.179 485.759 250.444 475.592 254.522C464.865 217.303 429.241 189.089 388.3 189.089C377.277 189.089 366.649 191.22 356.785 195.061V88.6355C356.785 39.7599 317.021 0 268.149 0C219.278 0 179.514 39.7599 179.514 88.6355V349.653C164.001 329.842 145.348 312.576 123.697 303.677C99.537 293.75 74.1124 294.935 50.1612 307.112C6.11132 329.511 -12.0491 383.492 9.67644 427.451L119.781 650.273C122.893 656.387 197.509 800 332.597 800H490.171C614.418 800 715.498 698.388 715.498 573.464L715.376 410.016H715.266ZM490.175 740.91H332.601C235.291 740.91 174.668 627.701 172.482 623.533L62.6529 401.274C55.0735 385.938 61.3529 367.715 76.9488 359.785C85.5445 355.412 93.0253 354.967 101.207 358.32C133.829 371.694 165.852 436.146 178.364 473.605L187.857 502.201L238.608 484.241V88.6355C238.608 72.3423 251.86 59.0903 268.153 59.0903C284.446 59.0903 297.698 72.3423 297.698 88.6355V429.39H298.234H356.789H357.324V279.694C357.324 263.2 372.089 248.179 388.303 248.179C405.093 248.179 419.818 261.987 419.818 277.724V336.815V439.238H478.909V336.815C478.909 320.522 492.161 307.27 508.454 307.27C524.747 307.27 537.999 320.522 537.999 336.815V401.814V466.813H597.089V401.814C597.089 385.521 610.341 372.269 626.634 372.269C642.928 372.269 656.18 385.521 656.18 401.814V444.072H656.317L656.416 573.487C656.412 665.806 581.836 740.91 490.175 740.91Z" fill="black"></path>
+</svg>
+</div>
+
+<div class="button-wrapper">
+<button type="button" id="buttonWrapper" class="reaction footer-button-base__button ax-outline footer-button__button--no-opacity footer-button__button inherited-styles-for-exported-element" aria-label="Reactions" onclick="togglePicker()">
+  <div class="footer-button-base__img-layer"><svg width="26" height="26" viewBox="0 0 26 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="SvgReaction">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M10.226 22.043a1.5 1.5 0 0 1-1.696-.471c-1.189-1.479-2.9-4.056-5.134-7.425l-.741-1.116C.841 10.3.311 7.567 1.195 5.285 2.082 2.993 4.226 1.6 6.797 1.201c2.242-.348 4.194.842 5.454 1.925a12.537 12.537 0 0 1 1.615 1.68l.004.006.007-.003a12.137 12.137 0 0 1 2.221-.615c1.621-.282 3.892-.3 5.656 1.161 2.024 1.675 3.188 3.987 2.825 6.425-.36 2.427-2.165 4.512-5.075 5.93l-1.19.58c-3.588 1.752-6.334 3.092-8.089 3.753Zm4.493-15.935c-.683.238-1.183.49-1.355.622-.084-.203-.39-.68-.863-1.238-1.133-1.34-3.217-3.152-5.46-2.804-4.39.681-6.434 4.565-3.146 9.516l.723 1.088c2.26 3.406 3.928 5.92 5.07 7.34 1.686-.634 4.365-1.941 7.994-3.712l1.16-.565c5.276-2.572 5.425-6.982 1.97-9.842-1.764-1.461-4.456-.975-6.093-.405Z" fill="#fff"></path>
+    </svg></div><span class="footer-button-base__button-label">Reactions</span>
+</button>
+</div>
+
+<div id="reactionPicker" class="reaction-simple-picker__container inherited-styles-for-exported-element" tabindex="0">
+  <div class="reaction-simple-picker__row"><button type="button" class="picker reaction-simple-picker__block reaction-simple-picker__block--reaction reaction-simple-picker__block--first ax-outline" tabindex="0" data-tooltip="Clap" data-a-l="5-0-0" data-a-walk-policy="207" data-a-l-list-info="5-0-0,5-0-6">
+      <div class="reaction-simple-picker__tooltip-wrapper" data-tooltip="Clap" data-a-l="5-0-0" data-a-walk-policy="207" data-a-l-list-info="5-0-0,5-0-6">
+        <div class="reaction-simple-picker__content-wrapper"><svg id="___SVG_ID__211__1___" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="24" height="24" viewBox="0 0 64 64" xml:space="preserve" class="lazy-svg-icon__icon lazy-icon-reactions/1f44f">
+            <path fill="#F7B448" d="M15.18 15.04c-3.38-4.35-7.68-.3-6.09 2.49.35.6.97 1.44.97 1.44-2.42-2.65-7.16.04-4.26 5.21.53.94 3.77 6.88 3.77 6.88-3.5-5.12-7.3-1.66-5.22 2.95 2.89 6.38 7.18 12.76 12.43 18.74 4.76 5.41 8.53 3.71 13.22 8.78 2.22 2.4 14.33-5.92 12.52-9.94-5.6-12.51-25.16-33.75-27.34-36.55z"></path>
+            <path fill="#DB942D" d="M30.01 61.53c-2.18-2.35-4.52-2.84-6.57-3.7-2.22-.92-4.67-1.69-7.22-4.59-5.44-6.19-9.66-12.56-12.55-18.93-1.34-2.97-.5-5.37 1.04-6.21.62-.34 1.41-.46 2.29-.19-.81-1.47-1.61-2.94-1.85-3.37-1.86-3.32-.85-5.68.59-6.69.72-.51 1.56-.73 2.4-.64-.44-1.48.18-3.19 1.6-4.13 1.14-.76 2.95-1.07 4.69.22 1.61 1.18.16 2.23.16 2.23-1.28-1.57-2.78-2.02-4-1.2-.87.58-1.42 1.81-.83 2.85.32.56.92 1.36.92 1.37l-1.18.93c-.93-1.02-2.15-.93-2.88-.41-.93.66-1.53 2.29-.15 4.75.53.94 3.74 6.92 3.74 6.92l-1.29.7c-1.2-1.76-2.54-2.53-3.47-2.02-.92.5-1.31 2.24-.39 4.28 2.82 6.23 6.96 12.48 12.31 18.56 2.32 2.64 4.3 3.7 6.46 4.6 2.1.88 4.66 2.34 6.18 4.67z"></path>
+            <path fill="#DB942D" d="M7.46 18.43c3.44-.47 13.32 19.97 15.87 19.97-2.2-1.59-8.88-15.86-13.59-21.02-.25-.28-2.64 1.09-2.28 1.05zM16.46 43.25c.15-.09.3-.18.44-.27-1.56-2.16-4.02-8-8-14.41-.12-.19-1.24 1.17-1.1 1.34 4.16 5.46 6.72 11.51 8.66 13.34z"></path>
+            <path fill="#DB942D" d="M15.86 41.95c.35 1.49-.71 2.6-.71 2.6s1.04-.7 3.06-1.75c.01 0-1.45.09-2.35-.85z"></path>
+            <path fill="#0FB4D4" d="M48.45 6.06c-1.52 2.64-2 6.4-2 6.4s3-2.29 4.52-4.94c2.47-4.28-.06-5.74-2.52-1.46zM41.19 3.71c0 3.05 1.46 6.55 1.46 6.55s1.46-3.49 1.46-6.55c0-4.95-2.92-4.95-2.92 0zM55.15 10.11c-2.64 1.53-4.92 4.54-4.92 4.54s3.74-.48 6.37-2c4.27-2.47 2.81-5.02-1.45-2.54z"></path>
+            <radialgradient id="___SVG_ID__211__0___" cx="42.471" cy="30.992" r="26.181" gradientTransform="matrix(.9421 -.3894 .5282 1.2442 -19.59 7.757)" gradientUnits="userSpaceOnUse">
+              <stop offset="0.436" style="stop-color: rgb(255, 201, 64);"></stop>
+              <stop offset="0.686" style="stop-color: rgb(255, 199, 62);"></stop>
+              <stop offset="0.797" style="stop-color: rgb(255, 192, 57);"></stop>
+              <stop offset="0.88" style="stop-color: rgb(255, 179, 48);"></stop>
+              <stop offset="0.903" style="stop-color: rgb(255, 174, 44);"></stop>
+            </radialgradient>
+            <path fill="url(#___SVG_ID__211__0___)" d="M53.67 21.17c-.84-4.26-7.67-2.5-6.97 3.52 0 0-7.61-12.77-11.57-16.51-3.27-3.08-7.15-.74-6.72 1.29 0 0-.83-.9-1.79-1.93-3.56-3.84-7.85-.11-6.82 3.16.44 1.39.65 1.59.65 1.59-2.04-1.81-7.5.32-4.86 6.05.48 1.05 4.01 8.36 4.01 8.36-3.28-5.74-7.91-2.27-6.07 2.81 2.54 7.05 7.19 17 13.22 23.53 2.77 3 9.06 5.28 11.35 9.55 2.74 5.1 24.7-4.85 21.66-11-1.37-2.77.77-11.32.47-13.78-.89-7.29-5.03-8.91-6.56-16.64z"></path>
+            <path opacity="0.3" fill="#FFF" d="M52.4 26.01c-.47-.46-1.59-3.98-1.28-4.52.76-1.35 1.7-1.21 1.9-.66.31.84.97 3.47 1.42 4.84.19.58-1.73.64-2.04.34zM30.96 12.23c-.41-.4-1.17-1.27-1.38-1.63-.91-1.59 2.2-3.86 3.47-2.56.32.33 1 1.34 1.26 1.86.77 1.58-2.06 3.57-3.35 2.33zM22.6 12.29c-.46-.44-1.3-1.41-1.53-1.81-1.01-1.77 2.45-4.28 3.86-2.84.36.36 1.11 1.48 1.39 2.06.85 1.77-2.29 3.98-3.72 2.59zM17.4 17.55c-.37-.48-1.02-1.51-1.18-1.92-.7-1.81 2.92-3.7 4.04-2.13.28.39.84 1.56 1.02 2.15.56 1.77-2.73 3.41-3.88 1.9zM15.16 29.05c-.3-.43-.82-1.35-.94-1.72-.52-1.6 2.7-3.07 3.6-1.67.23.35.65 1.38.78 1.9.41 1.56-2.52 2.84-3.44 1.49z"></path>
+            <path fill="#DB942D" d="M45.54 24.12c3.41 6.17 6.01 11.49 8.18 11.16-2.27-1.6-4.95-6.3-6.65-11.93-.06-.21-1.63.59-1.53.77zM26.87 8.78c8.99 11.15 11.48 21.39 13.88 21.59-2.33-2.06-3.37-8.56-12.12-21.79-.22-.35-2.01-.11-1.76.2zM18.36 12.23c4.47-.38 12.36 21.38 15.05 21.56-2.19-1.86-5.77-13.97-12.77-22.73-.25-.31-2.67 1.21-2.28 1.17zM18.87 26.97c1.47 2.52 5.42 12.46 7.65 12.23-1.48-1.01-2.56-6.14-6.93-14.09-.12-.2-.84 1.66-.72 1.86z"></path>
+            <path fill="#DB942D" d="M60.97 37.72c-.47-3.91-1.82-6.21-3.25-8.65-1.27-2.17-2.59-4.42-3.31-8.05-.41-2.05-2.06-3.22-4.13-2.9-1.84.28-3.63 1.75-4.2 4.1-2.35-3.81-7.38-11.71-10.43-14.58-2.25-2.12-4.77-1.93-6.24-1.13-.65.36-1.14.83-1.45 1.37l-.79-.85c-2.09-2.26-4.44-2.16-5.94-1.31-1.87 1.06-2.78 3.25-2.17 5.2 0 .01 0 .02.01.02-1.04-.11-2.2.16-3.14.84-.74.54-3 2.62-1.04 6.87.24.53 1.24 2.61 2.18 4.57 0 0-1.34-.25-2.45.34-1.92 1.02-2.97 3.01-1.82 6.21 1.66 4.59 6.28 16.09 13.37 23.78 1.16 1.26 3.04 2.17 4.82 3.33 2.62 1.71 5.51 3.36 7.1 5.72-1.25-2.75-3.88-4.95-6.53-6.68-1.7-1.11-3.23-2.26-4.27-3.38-7.1-7.7-11.79-19.76-13.06-23.27-.82-2.27-.4-3.64 1.06-4.28 1.85-.82 2.56 0 3.58 1.99l1.4-.59c-.04-.07-3.53-7.32-4-8.35-1.02-2.21-.82-4.05.56-5.04.99-.72 2.38-.78 3.1-.15l.71-.76.4-.26c-.01-.01-.18-.28-.52-1.35-.4-1.27.24-2.76 1.47-3.46 1.3-.74 2.78-.36 4.06 1.02L29.72 12l-.57-2.68c-.11-.5.34-1.06 1-1.49 1.53-1 2.8-.66 4.45.9 3.84 3.62 11.37 16.22 11.44 16.35l1.81 3.04-.4-3.51c-.33-2.9 1.33-4.74 3.06-5 .97-.15 2.12.22 2.41 1.71.77 3.87 2.15 6.23 3.48 8.51 1.35 2.3 2.62 4.47 3.06 8.08.1.83-.13 2.62-.37 4.51-.46 3.55-.56 6.98.66 9.18-.63-2.05-.03-6.06.65-9.01.42-1.82.69-3.85.57-4.87z"></path>
+          </svg></div>
+      </div>
+    </button><button type="button" class="picker reaction-simple-picker__block reaction-simple-picker__block--reaction ax-outline" tabindex="0" data-tooltip="Thumbs Up" data-a-l="5-0-1" data-a-walk-policy="207" data-a-l-list-info="5-0-0,5-0-6">
+      <div class="reaction-simple-picker__tooltip-wrapper" data-tooltip="Thumbs Up" data-a-l="5-0-1" data-a-walk-policy="207" data-a-l-list-info="5-0-0,5-0-6">
+        <div class="reaction-simple-picker__content-wrapper"><svg id="___SVG_ID__212__6___" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="24" height="24" viewBox="0 0 64 64" xml:space="preserve" class="lazy-svg-icon__icon lazy-icon-reactions/1f44d">
+            <radialgradient id="___SVG_ID__212__0___" cx="29.868" cy="19.164" r="43.258" gradientTransform="matrix(.9766 0 0 .8506 -6.097 7.958)" gradientUnits="userSpaceOnUse">
+              <stop offset="0.436" style="stop-color: rgb(255, 201, 64);"></stop>
+              <stop offset="0.686" style="stop-color: rgb(255, 199, 62);"></stop>
+              <stop offset="0.797" style="stop-color: rgb(255, 192, 57);"></stop>
+              <stop offset="0.88" style="stop-color: rgb(255, 179, 48);"></stop>
+              <stop offset="0.903" style="stop-color: rgb(255, 174, 44);"></stop>
+            </radialgradient>
+            <path fill="url(#___SVG_ID__212__0___)" d="M45.57 29.67c-6.08-.89 5.11-12.25-1.21-22.96-3.75-6.36-8.95-3.85-8.66-.94 2.09 21.45-15.86 28.33-23.69 27.12-6.75-1.04-6.61 25.4 0 24.29 3.56-.6 10.62-.73 11.01-.5 9.54 5.58 21.63 3.32 22.56 3.14V29.67z"></path>
+            <path fill="#DB942D" d="M38.54 61.16c-4.55 0-10.53-.74-15.81-3.81-.89-.13-6.92-.47-10.72-.18 3.43-1.01 10.63-1.58 11.38-1.14 8.32 4.87 18.83 3.58 21.45 3.16V30.26c-.65-.2-1.14-.55-1.46-1.05-.88-1.38-.23-3.54.6-6.28 1.3-4.31 3.07-10.22-.25-15.85-1.94-3.29-4.22-3.95-5.71-3.46-1.02.33-1.67 1.18-1.58 2.07 1.09 11.23-3.27 17.93-7.12 21.58-5.38 5.1-11.42 6.74-17.31 5.62 6.24.15 11.26-1.92 16.3-6.69 3.61-3.42 7.7-9.72 6.66-20.36-.16-1.58.91-3.07 2.6-3.62 2.03-.67 5.04.07 7.43 4.11 3.65 6.18 1.76 12.45.39 17.02-.66 2.19-1.28 4.26-.77 5.07.06.1.26.4 1.06.52l.63.09v31.38l-.59.12c-.61.12-3.41.63-7.18.63z"></path>
+            <radialgradient id="___SVG_ID__212__1___" cx="-46.253" cy="29.479" r="7.432" gradientTransform="matrix(1.4177 0 0 2.0064 103.26 -14.071)" gradientUnits="userSpaceOnUse">
+              <stop offset="0.279" style="stop-color: rgb(250, 160, 15);"></stop>
+              <stop offset="0.48" style="stop-color: rgb(251, 170, 27); stop-opacity: 0.6705;"></stop>
+              <stop offset="0.847" style="stop-color: rgb(255, 197, 60); stop-opacity: 0.0726;"></stop>
+              <stop offset="0.891" style="stop-color: rgb(255, 201, 64); stop-opacity: 0;"></stop>
+            </radialgradient>
+            <path fill="url(#___SVG_ID__212__1___)" d="M38.94 29.91c-16.38-.69-16.69 29.57-.71 30.28 7.77.34 8.45-29.95.71-30.28z"></path>
+            <radialgradient id="___SVG_ID__212__2___" cx="48.478" cy="52.781" r="7.678" gradientTransform="matrix(.9917 0 0 .6195 -1.457 23.926)" gradientUnits="userSpaceOnUse">
+              <stop offset="0.521" style="stop-color: rgb(255, 201, 64);"></stop>
+              <stop offset="0.849" style="stop-color: rgb(255, 174, 44);"></stop>
+            </radialgradient>
+            <path fill="url(#___SVG_ID__212__2___)" d="M51.44 53.85c-4.27 0-6.17.06-10.23.06-4.2 0-4.98 4.43-3.15 6.03 1.94 1.7 10.14 1.46 12.31.96 2.75-.63 4.46-7.05 1.07-7.05z"></path>
+            <radialgradient id="___SVG_ID__212__3___" cx="49.421" cy="44.928" r="8.992" gradientTransform="matrix(.9917 0 0 .6783 -1.457 18.487)" gradientUnits="userSpaceOnUse">
+              <stop offset="0.521" style="stop-color: rgb(255, 201, 64);"></stop>
+              <stop offset="0.849" style="stop-color: rgb(255, 174, 44);"></stop>
+            </radialgradient>
+            <path fill="url(#___SVG_ID__212__3___)" d="M52.25 46.05H39.99c-4.15 0-4.14 7.55 0 7.79 2.87.17 7.75.39 11.44 0 3.93-.4 4.77-7.79.82-7.79z"></path>
+            <radialgradient id="___SVG_ID__212__4___" cx="50.166" cy="36.684" r="9.344" gradientTransform="matrix(.9917 0 0 .6535 -1.457 16.946)" gradientUnits="userSpaceOnUse">
+              <stop offset="0.521" style="stop-color: rgb(255, 201, 64);"></stop>
+              <stop offset="0.849" style="stop-color: rgb(255, 174, 44);"></stop>
+            </radialgradient>
+            <path fill="url(#___SVG_ID__212__4___)" d="M53.57 37.22c-6.1 0-7.91.49-13.72.49-4.75 0-4.67 7.48 0 8.35 3.39.63 8.09.51 12.4 0 3.8-.45 5.15-8.84 1.32-8.84z"></path>
+            <radialgradient id="___SVG_ID__212__5___" cx="51.072" cy="27.547" r="9.959" gradientTransform="matrix(.9917 0 0 .6422 -1.457 14.313)" gradientUnits="userSpaceOnUse">
+              <stop offset="0.521" style="stop-color: rgb(255, 201, 64);"></stop>
+              <stop offset="0.849" style="stop-color: rgb(255, 174, 44);"></stop>
+            </radialgradient>
+            <path fill="url(#___SVG_ID__212__5___)" d="M53.38 28.63c-3.35-.45-8.53-.95-13.94 1.92-2.68 1.42-1.62 6.78.62 7.16 2.35.39 7.39 0 13.52-.49 3.78-.3 3.4-8.1-.2-8.59z"></path>
+            <path fill="#DB942D" d="M45.38 62c-3.05 0-6.49-.35-7.83-1.51-1.14-1-1.5-2.83-.88-4.45.69-1.79 2.38-2.87 4.53-2.87v1.47c-1.52 0-2.66.7-3.13 1.91-.4 1.05-.2 2.23.47 2.82 1.62 1.41 9.34 1.33 11.65.8 1.28-.29 2.56-2.71 2.35-4.45-.12-1.02-.66-1.15-1.11-1.15V53.1c1.45 0 2.42.92 2.6 2.45.27 2.31-1.29 5.55-3.5 6.06-.81.2-2.87.39-5.15.39z"></path>
+            <path fill="#DB942D" d="M46.49 54.8c-1.93 0-4.11-.07-6.54-.22-2.59-.16-3.88-2.59-3.81-4.92.08-2.56 1.66-4.35 3.85-4.35v1.47c-1.57 0-2.31 1.47-2.36 2.92-.05 1.61.76 3.3 2.4 3.4 4.79.29 8.6.29 11.32 0 1.75-.18 2.82-2.29 2.72-4.14-.04-.66-.28-2.19-1.82-2.19V45.3c1.9 0 3.2 1.41 3.32 3.58.13 2.51-1.38 5.4-4.05 5.68-1.41.17-3.09.24-5.03.24z"></path>
+            <path fill="#DB942D" d="M45.39 47.22c-2.17 0-4.11-.15-5.68-.44-2.98-.56-4.34-3.4-4.12-5.78.23-2.41 1.94-4.02 4.26-4.02v1.47c-1.85 0-2.64 1.39-2.77 2.69-.17 1.74.8 3.8 2.91 4.2 2.98.56 7.42.55 12.17-.01 1.79-.21 3.07-3.05 2.94-5.25-.05-.79-.31-2.11-1.53-2.11V36.5c1.73 0 2.89 1.34 3.02 3.49.18 2.96-1.52 6.49-4.25 6.81-2.44.27-4.8.42-6.95.42z"></path>
+            <path fill="#DB942D" d="M42.69 38.6c-1.17 0-2.07-.06-2.76-.17-1.34-.22-2.41-1.64-2.74-3.6-.37-2.19.38-4.13 1.89-4.93 2.99-1.59 6.19-2.36 9.8-2.36 1.74 0 3.3.18 4.6.36 2.41.33 3.59 3.04 3.52 5.55-.07 2.58-1.39 4.35-3.36 4.51-4.21.33-8.18.64-10.95.64zm6.19-9.58c-3.35 0-6.32.71-9.09 2.18-1.15.61-1.32 2.21-1.13 3.39.21 1.25.86 2.28 1.51 2.39 2.1.35 7.52-.03 13.34-.49 1.41-.11 1.95-1.73 1.99-3.08.05-1.83-.77-3.85-2.23-4.04-1.25-.18-2.75-.35-4.39-.35zM24.01 56.43s-2.14-1.29-2.85-3.06c-.11 2.44 1.37 3.76 1.37 3.76l1.48-.7zM36.83 44.46c-2.3 2.27-5.27 4.22-8.63 5.13 4.07.15 7.68-1.53 10.28-3.79-.55-.46-1.1-.91-1.65-1.34z"></path>
+          </svg></div>
+      </div>
+    </button><button type="button" class="picker reaction-simple-picker__block reaction-simple-picker__block--reaction ax-outline" tabindex="0" data-tooltip="Joy" data-a-l="5-0-2" data-a-walk-policy="207" data-a-l-list-info="5-0-0,5-0-6">
+      <div class="reaction-simple-picker__tooltip-wrapper" data-tooltip="Joy" data-a-l="5-0-2" data-a-walk-policy="207" data-a-l-list-info="5-0-0,5-0-6">
+        <div class="reaction-simple-picker__content-wrapper"><svg id="___SVG_ID__213__6___" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="24" height="24" viewBox="0 0 64 64" xml:space="preserve" class="lazy-svg-icon__icon lazy-icon-reactions/1f602">
+            <lineargradient id="___SVG_ID__213__0___" gradientUnits="userSpaceOnUse" x1="32" y1="62" x2="32" y2="2">
+              <stop offset="0" style="stop-color: rgb(255, 149, 0);"></stop>
+              <stop offset="0.192" style="stop-color: rgb(255, 173, 0);"></stop>
+              <stop offset="0.545" style="stop-color: rgb(255, 213, 0);"></stop>
+              <stop offset="0.827" style="stop-color: rgb(255, 237, 0);"></stop>
+              <stop offset="1" style="stop-color: rgb(255, 246, 0);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__213__0___)" d="M32 2c16.57 0 30 13.43 30 30S48.57 62 32 62 2 48.57 2 32 15.43 2 32 2z"></path>
+            <path fill="#1A1626" d="M15.74 25.1c4.27-5.52 7.26-5.52 11.53 0 .65.83 1.97.21 1.7-.6-3.63-10.68-11.3-10.68-14.93 0-.28.82 1.05 1.44 1.7.6zM36.73 25.1c4.27-5.52 7.26-5.52 11.53 0 .65.83 1.97.21 1.7-.6-3.63-10.68-11.3-10.68-14.93 0-.27.82 1.06 1.44 1.7.6zM47.25 31.33C43.6 30.65 38.47 30 32 30c-6.47 0-11.61.65-15.25 1.33-1.84.34-2.84 1.87-2.75 3.41C14.45 42.49 20.4 49 32 49s17.55-6.51 18-14.27c.08-1.54-.92-3.06-2.75-3.4z"></path>
+            <path fill="#FD7383" d="M23.47 45s3.79 2 8.52 2c4.74 0 8.53-2 8.53-2s-2.84-3-8.52-2c-5.68-1-8.53 2-8.53 2z"></path>
+            <lineargradient id="___SVG_ID__213__1___" gradientUnits="userSpaceOnUse" x1="16.012" y1="34.498" x2="47.989" y2="34.498">
+              <stop offset="0" style="stop-color: rgb(207, 215, 230);"></stop>
+              <stop offset="0.037" style="stop-color: rgb(218, 224, 236);"></stop>
+              <stop offset="0.126" style="stop-color: rgb(238, 241, 246);"></stop>
+              <stop offset="0.215" style="stop-color: rgb(251, 252, 253);"></stop>
+              <stop offset="0.3" style="stop-color: rgb(255, 255, 255);"></stop>
+              <stop offset="0.7" style="stop-color: rgb(255, 255, 255);"></stop>
+              <stop offset="0.785" style="stop-color: rgb(251, 252, 253);"></stop>
+              <stop offset="0.874" style="stop-color: rgb(238, 241, 246);"></stop>
+              <stop offset="0.963" style="stop-color: rgb(218, 224, 236);"></stop>
+              <stop offset="1" style="stop-color: rgb(207, 215, 230);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__213__1___)" d="M46.51 33.24C44 32.79 38.69 32 32 32c-6.69 0-12 .79-14.51 1.24-1.57.28-1.6.97-1.39 2.28.18 1.15.31 1.45 1.52 1.47 1.12.02 14.38 0 14.38 0s13.26.02 14.38 0c1.22-.02 1.34-.32 1.52-1.47.21-1.31.18-1.99-1.39-2.28z"></path>
+            <radialgradient id="___SVG_ID__213__2___" cx="368.313" cy="-1057.068" r="7.821" fx="371.096" fy="-1053.102" gradientTransform="matrix(.9792 -.2066 .3267 1.5353 40.396 1734.365)" gradientUnits="userSpaceOnUse">
+              <stop offset="0.055" style="stop-color: rgb(115, 239, 255);"></stop>
+              <stop offset="0.285" style="stop-color: rgb(112, 237, 255);"></stop>
+              <stop offset="0.446" style="stop-color: rgb(103, 229, 255);"></stop>
+              <stop offset="0.587" style="stop-color: rgb(87, 216, 255);"></stop>
+              <stop offset="0.715" style="stop-color: rgb(66, 199, 255);"></stop>
+              <stop offset="0.835" style="stop-color: rgb(37, 175, 255);"></stop>
+              <stop offset="0.948" style="stop-color: rgb(3, 147, 255);"></stop>
+              <stop offset="0.956" style="stop-color: rgb(0, 145, 255);"></stop>
+            </radialgradient>
+            <path fill="url(#___SVG_ID__213__2___)" d="M61.78 36.45c-2.36-4.92-9.86-8.06-10.7-8.05-.34.01-.52.21-.27.75 1.42 3.12 1.59 5.19.59 9.86-2.76 12.89 16.54 10.26 10.38-2.56z"></path>
+            <lineargradient id="___SVG_ID__213__3___" gradientUnits="userSpaceOnUse" x1="478.838" y1="-129.561" x2="478.838" y2="-138.002" gradientTransform="matrix(.9159 .7517 -.6345 .773 -468.497 -220.486)">
+              <stop offset="0.053" style="stop-color: rgb(196, 238, 255); stop-opacity: 0;"></stop>
+              <stop offset="0.45" style="stop-color: rgb(205, 240, 255); stop-opacity: 0.4197;"></stop>
+              <stop offset="1" style="stop-color: rgb(212, 242, 255);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__213__3___)" d="M59.9 35.53c-1.99-3.52-7.4-6.29-8-6.34-.24-.02-.37.1-.16.5 1.15 2.25 1.62 3.93 1.12 6.88-1.31 7.69 11.4 6.67 7.04-1.04z"></path>
+            <radialgradient id="___SVG_ID__213__4___" cx="-60.669" cy="-1126.684" r="7.821" fx="-57.886" fy="-1122.719" gradientTransform="matrix(-.9792 -.2066 -.3267 1.5353 -419.201 1752.615)" gradientUnits="userSpaceOnUse">
+              <stop offset="0.055" style="stop-color: rgb(115, 239, 255);"></stop>
+              <stop offset="0.285" style="stop-color: rgb(112, 237, 255);"></stop>
+              <stop offset="0.446" style="stop-color: rgb(103, 229, 255);"></stop>
+              <stop offset="0.587" style="stop-color: rgb(87, 216, 255);"></stop>
+              <stop offset="0.715" style="stop-color: rgb(66, 199, 255);"></stop>
+              <stop offset="0.835" style="stop-color: rgb(37, 175, 255);"></stop>
+              <stop offset="0.948" style="stop-color: rgb(3, 147, 255);"></stop>
+              <stop offset="0.956" style="stop-color: rgb(0, 145, 255);"></stop>
+            </radialgradient>
+            <path fill="url(#___SVG_ID__213__4___)" d="M2.22 36.45c2.36-4.92 9.86-8.06 10.7-8.05.34.01.52.21.27.75-1.42 3.12-1.59 5.19-.59 9.86C15.36 51.9-3.94 49.27 2.22 36.45z"></path>
+            <lineargradient id="___SVG_ID__213__5___" gradientUnits="userSpaceOnUse" x1="195.011" y1="146.453" x2="195.011" y2="138.012" gradientTransform="matrix(-.9159 .7517 .6345 .773 97.414 -220.486)">
+              <stop offset="0.053" style="stop-color: rgb(196, 238, 255); stop-opacity: 0;"></stop>
+              <stop offset="0.45" style="stop-color: rgb(205, 240, 255); stop-opacity: 0.4197;"></stop>
+              <stop offset="1" style="stop-color: rgb(212, 242, 255);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__213__5___)" d="M4.1 35.53c1.99-3.52 7.4-6.29 8-6.34.24-.02.37.1.16.5-1.15 2.25-1.62 3.93-1.12 6.88 1.31 7.69-11.4 6.67-7.04-1.04z"></path>
+          </svg></div>
+      </div>
+    </button><button type="button" class="picker reaction-simple-picker__block reaction-simple-picker__block--reaction ax-outline" tabindex="0" data-tooltip="Open Mouth" data-a-l="5-0-3" data-a-walk-policy="207" data-a-l-list-info="5-0-0,5-0-6">
+      <div class="reaction-simple-picker__tooltip-wrapper" data-tooltip="Open Mouth" data-a-l="5-0-3" data-a-walk-policy="207" data-a-l-list-info="5-0-0,5-0-6">
+        <div class="reaction-simple-picker__content-wrapper"><svg id="___SVG_ID__214__1___" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="24" height="24" viewBox="0 0 64 64" xml:space="preserve" class="lazy-svg-icon__icon lazy-icon-reactions/1f62e">
+            <lineargradient id="___SVG_ID__214__0___" gradientUnits="userSpaceOnUse" x1="32" y1="62" x2="32" y2="2">
+              <stop offset="0" style="stop-color: rgb(255, 149, 0);"></stop>
+              <stop offset="0.192" style="stop-color: rgb(255, 173, 0);"></stop>
+              <stop offset="0.545" style="stop-color: rgb(255, 213, 0);"></stop>
+              <stop offset="0.827" style="stop-color: rgb(255, 237, 0);"></stop>
+              <stop offset="1" style="stop-color: rgb(255, 246, 0);"></stop>
+            </lineargradient>
+            <circle fill="url(#___SVG_ID__214__0___)" cx="32" cy="32" r="30"></circle>
+            <path fill="#1A1626" d="M39.5 47.24c0 9.41-15 9.41-15 0 0-4.94 3.36-8.94 7.5-8.94 4.14 0 7.5 4 7.5 8.94z"></path>
+            <ellipse fill="#1A1626" cx="22" cy="25" rx="4" ry="5"></ellipse>
+            <ellipse fill="#1A1626" cx="42" cy="25" rx="4" ry="5"></ellipse>
+          </svg></div>
+      </div>
+    </button><button type="button" class="picker reaction-simple-picker__block reaction-simple-picker__block--reaction ax-outline" tabindex="0" data-tooltip="Heart" data-a-l="5-0-4" data-a-walk-policy="207" data-a-l-list-info="5-0-0,5-0-6">
+      <div class="reaction-simple-picker__tooltip-wrapper" data-tooltip="Heart" data-a-l="5-0-4" data-a-walk-policy="207" data-a-l-list-info="5-0-0,5-0-6">
+        <div class="reaction-simple-picker__content-wrapper"><svg id="___SVG_ID__215__1___" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="24" height="24" viewBox="0 0 64 64" xml:space="preserve" class="lazy-svg-icon__icon lazy-icon-reactions/2764">
+            <lineargradient id="___SVG_ID__215__0___" gradientUnits="userSpaceOnUse" x1="-486.676" y1="-403.593" x2="-486.676" y2="-421.66" gradientTransform="matrix(2.9058 0 0 2.7675 1446.185 1173.944)">
+              <stop offset="0" style="stop-color: rgb(219, 1, 0);"></stop>
+              <stop offset="0.584" style="stop-color: rgb(243, 19, 23);"></stop>
+              <stop offset="1" style="stop-color: rgb(255, 28, 35);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__215__0___)" d="M31.997 14.334C24.034 1.392 2 6.446 2 22.7 2 33.604 12.163 40.9 31.997 57 51.831 40.9 62 33.604 62 22.7c0-16.254-22.037-21.308-30.003-8.366z"></path>
+          </svg></div>
+      </div>
+    </button><button type="button" class="picker reaction-simple-picker__block reaction-simple-picker__block--reaction ax-outline" tabindex="0" data-tooltip="Tada" data-a-l="5-0-5" data-a-walk-policy="207" data-a-l-list-info="5-0-0,5-0-6">
+      <div class="reaction-simple-picker__tooltip-wrapper" data-tooltip="Tada" data-a-l="5-0-5" data-a-walk-policy="207" data-a-l-list-info="5-0-0,5-0-6">
+        <div class="reaction-simple-picker__content-wrapper"><svg id="___SVG_ID__216__17___" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="24" height="24" viewBox="0 0 64 64" xml:space="preserve" class="lazy-svg-icon__icon lazy-icon-reactions/1f389">
+            <lineargradient id="___SVG_ID__216__0___" gradientUnits="userSpaceOnUse" x1="17.67" y1="56.33" x2="9.421" y2="42.268">
+              <stop offset="0" style="stop-color: rgb(219, 118, 0);"></stop>
+              <stop offset="0.228" style="stop-color: rgb(225, 134, 8);"></stop>
+              <stop offset="0.672" style="stop-color: rgb(241, 175, 31);"></stop>
+              <stop offset="1" style="stop-color: rgb(255, 210, 49);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__216__0___)" d="M12.664 29.522 2.033 61.203c-.158.473.277.934.758.76l30.461-11.021-20.588-21.42z"></path>
+            <path fill="#E88A30" d="M27.412 35.789c5.816 5.924 8.818 12.471 6.707 14.622-2.113 2.151-8.545-.905-14.363-6.829-5.816-5.923-8.818-12.47-6.705-14.621 2.113-2.152 8.543.906 14.361 6.828z"></path>
+            <polygon opacity="0.3" fill="#FFF" points="10.434,48.663 9.901,45.537 7.555,44.747 7.791,44.045 9.705,43.057 9.74,39.887 12.006,42.103 15.026,41.155 13.623,43.994 15.459,46.578 12.324,46.119"></polygon>
+            <polygon opacity="0.3" fill="#FFF" points="15.514,54.948 12.693,56.389 15.496,57.367 19.455,55.933 20.855,53.103 17.824,54.019 15.582,51.78"></polygon>
+            <polygon opacity="0.3" fill="#FFF" points="2.381,60.166 4.314,58.029 7.072,58.723 5.668,56.249 7.182,53.841 4.289,54.479"></polygon>
+            <radialgradient id="___SVG_ID__216__1___" cx="23.655" cy="39.615" r="11.056" gradientUnits="userSpaceOnUse">
+              <stop offset="0" style="stop-color: rgb(133, 59, 27);"></stop>
+              <stop offset="0.183" style="stop-color: rgb(125, 57, 29);"></stop>
+              <stop offset="0.468" style="stop-color: rgb(103, 51, 33);"></stop>
+              <stop offset="0.817" style="stop-color: rgb(67, 41, 40);"></stop>
+              <stop offset="0.873" style="stop-color: rgb(61, 39, 41);"></stop>
+            </radialgradient>
+            <path fill="url(#___SVG_ID__216__1___)" d="M27.307 35.895c5.705 5.806 8.691 12.178 6.678 14.233-2.018 2.052-8.277-.988-13.982-6.795-5.703-5.802-8.691-12.174-6.674-14.228 2.015-2.056 8.276.986 13.978 6.79z"></path>
+            <lineargradient id="___SVG_ID__216__2___" gradientUnits="userSpaceOnUse" x1="354.151" y1="145.305" x2="366.979" y2="145.305" gradientTransform="scale(-1 1) rotate(-33.585 -62.86 755.775)">
+              <stop offset="0" style="stop-color: rgb(83, 218, 242);"></stop>
+              <stop offset="0.209" style="stop-color: rgb(78, 213, 241);"></stop>
+              <stop offset="0.456" style="stop-color: rgb(64, 199, 237);"></stop>
+              <stop offset="0.722" style="stop-color: rgb(40, 175, 231);"></stop>
+              <stop offset="0.999" style="stop-color: rgb(7, 142, 222);"></stop>
+              <stop offset="1" style="stop-color: rgb(7, 142, 222);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__216__2___)" d="M43.297 8.201c2.109-1.133 10.277 6.073 6.041 11.929-.299.416 2.01-1.215 1.867-.787 5.561-6.18-5.105-15.366-6.387-13.437-1.392 2.097-.13.198-1.521 2.295z"></path>
+            <lineargradient id="___SVG_ID__216__3___" gradientUnits="userSpaceOnUse" x1="353.862" y1="-868.306" x2="367.052" y2="-868.306" gradientTransform="scale(-1) rotate(33.585 -1269.467 -1119.41)">
+              <stop offset="0" style="stop-color: rgb(7, 142, 222);"></stop>
+              <stop offset="0.075" style="stop-color: rgb(17, 153, 226);"></stop>
+              <stop offset="0.332" style="stop-color: rgb(47, 186, 239);"></stop>
+              <stop offset="0.578" style="stop-color: rgb(69, 210, 248);"></stop>
+              <stop offset="0.806" style="stop-color: rgb(82, 224, 253);"></stop>
+              <stop offset="1" style="stop-color: rgb(87, 229, 255);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__216__3___)" d="M44.816 5.904c-.631 3.617 10.121 5.603 14.182 1.699-3.537 7.521-15.086 5.421-16.313 1.511-.294-.949.741-1.112 2.131-3.21z"></path>
+            <lineargradient id="___SVG_ID__216__4___" gradientUnits="userSpaceOnUse" x1="354.079" y1="156.279" x2="366.905" y2="156.279" gradientTransform="scale(-1 1) rotate(-33.585 -62.86 755.775)">
+              <stop offset="0" style="stop-color: rgb(83, 218, 242);"></stop>
+              <stop offset="0.209" style="stop-color: rgb(78, 213, 241);"></stop>
+              <stop offset="0.456" style="stop-color: rgb(64, 199, 237);"></stop>
+              <stop offset="0.722" style="stop-color: rgb(40, 175, 231);"></stop>
+              <stop offset="0.999" style="stop-color: rgb(7, 142, 222);"></stop>
+              <stop offset="1" style="stop-color: rgb(7, 142, 222);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__216__4___)" d="M37.443 17.149c2.105-1.13 10.641 5.604 6.289 12.785-.268.444 1.764-2.077 1.619-1.644 5.559-6.181-5.105-15.365-6.387-13.437-1.392 2.098-.128.2-1.521 2.296z"></path>
+            <lineargradient id="___SVG_ID__216__5___" gradientUnits="userSpaceOnUse" x1="353.813" y1="-879.942" x2="366.95" y2="-879.942" gradientTransform="scale(-1) rotate(33.585 -1269.467 -1119.41)">
+              <stop offset="0" style="stop-color: rgb(7, 142, 222);"></stop>
+              <stop offset="0.075" style="stop-color: rgb(17, 153, 226);"></stop>
+              <stop offset="0.332" style="stop-color: rgb(47, 186, 239);"></stop>
+              <stop offset="0.578" style="stop-color: rgb(69, 210, 248);"></stop>
+              <stop offset="0.806" style="stop-color: rgb(82, 224, 253);"></stop>
+              <stop offset="1" style="stop-color: rgb(87, 229, 255);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__216__5___)" d="M38.963 14.854c-.406 3.563 9.193 6.656 13.266 2.979-3.801 8.31-14.58 3.959-15.393.23-.213-.967.736-1.112 2.127-3.209z"></path>
+            <lineargradient id="___SVG_ID__216__6___" gradientUnits="userSpaceOnUse" x1="353.607" y1="-898.773" x2="367.166" y2="-898.773" gradientTransform="scale(-1) rotate(33.585 -1269.467 -1119.41)">
+              <stop offset="0" style="stop-color: rgb(87, 229, 255);"></stop>
+              <stop offset="0.194" style="stop-color: rgb(82, 224, 253);"></stop>
+              <stop offset="0.422" style="stop-color: rgb(69, 210, 248);"></stop>
+              <stop offset="0.668" style="stop-color: rgb(47, 186, 239);"></stop>
+              <stop offset="0.925" style="stop-color: rgb(17, 153, 226);"></stop>
+              <stop offset="1" style="stop-color: rgb(7, 142, 222);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__216__6___)" d="M46.121 27.256c-6.584 13.667-18.979 6.526-24.922 13.392 7.24-10.908 17.172-4.555 24.922-13.392z"></path>
+            <lineargradient id="___SVG_ID__216__7___" gradientUnits="userSpaceOnUse" x1="46.101" y1="97.557" x2="55.237" y2="97.557" gradientTransform="scale(-1 1) rotate(-67.058 -46.723 145.862)">
+              <stop offset="0.23" style="stop-color: rgb(170, 91, 239);"></stop>
+              <stop offset="0.491" style="stop-color: rgb(168, 88, 238);"></stop>
+              <stop offset="0.66" style="stop-color: rgb(162, 80, 233);"></stop>
+              <stop offset="0.803" style="stop-color: rgb(150, 65, 225);"></stop>
+              <stop offset="0.931" style="stop-color: rgb(135, 44, 215);"></stop>
+              <stop offset="1" style="stop-color: rgb(124, 29, 207);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__216__7___)" d="M52.438 32.725c1.695.157 3.719 7.647-1.096 9.462-.342.129 1.67.067 1.418.265 5.729-1.486 3-11.134 1.482-10.491-1.648.698-.156.064-1.804.764z"></path>
+            <lineargradient id="___SVG_ID__216__8___" gradientUnits="userSpaceOnUse" x1="45.459" y1="-821.38" x2="54.852" y2="-821.38" gradientTransform="rotate(-112.942 337.362 -394.921)">
+              <stop offset="0" style="stop-color: rgb(124, 29, 207);"></stop>
+              <stop offset="0.069" style="stop-color: rgb(135, 44, 215);"></stop>
+              <stop offset="0.197" style="stop-color: rgb(150, 65, 225);"></stop>
+              <stop offset="0.34" style="stop-color: rgb(162, 80, 233);"></stop>
+              <stop offset="0.509" style="stop-color: rgb(168, 88, 238);"></stop>
+              <stop offset="0.77" style="stop-color: rgb(170, 91, 239);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__216__8___)" d="M54.242 31.96c-1.795 1.898 3.813 7.304 7.758 6.578-5.055 3.08-11.092-2.706-10.283-5.51.195-.679.875-.37 2.525-1.068z"></path>
+            <lineargradient id="___SVG_ID__216__9___" gradientUnits="userSpaceOnUse" x1="46.048" y1="105.371" x2="55.185" y2="105.371" gradientTransform="scale(-1 1) rotate(-67.058 -46.723 145.862)">
+              <stop offset="0.23" style="stop-color: rgb(170, 91, 239);"></stop>
+              <stop offset="0.491" style="stop-color: rgb(168, 88, 238);"></stop>
+              <stop offset="0.66" style="stop-color: rgb(162, 80, 233);"></stop>
+              <stop offset="0.803" style="stop-color: rgb(150, 65, 225);"></stop>
+              <stop offset="0.931" style="stop-color: rgb(135, 44, 215);"></stop>
+              <stop offset="1" style="stop-color: rgb(124, 29, 207);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__216__9___)" d="M45.445 35.741c1.695.155 4.119 7.511-1.283 10.066-.334.158 1.861-.541 1.607-.34 5.729-1.487 3-11.134 1.48-10.491-1.647.699-.153.066-1.804.765z"></path>
+            <lineargradient id="___SVG_ID__216__10___" gradientUnits="userSpaceOnUse" x1="45.424" y1="-829.668" x2="54.781" y2="-829.668" gradientTransform="rotate(-112.942 337.362 -394.921)">
+              <stop offset="0" style="stop-color: rgb(124, 29, 207);"></stop>
+              <stop offset="0.069" style="stop-color: rgb(135, 44, 215);"></stop>
+              <stop offset="0.197" style="stop-color: rgb(150, 65, 225);"></stop>
+              <stop offset="0.34" style="stop-color: rgb(162, 80, 233);"></stop>
+              <stop offset="0.509" style="stop-color: rgb(168, 88, 238);"></stop>
+              <stop offset="0.77" style="stop-color: rgb(170, 91, 239);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__216__10___)" d="M47.25 34.976c-1.641 1.956 2.848 7.567 6.711 6.98-5.521 3.445-10.217-3.377-9.236-5.911.254-.657.875-.37 2.525-1.069z"></path>
+            <lineargradient id="___SVG_ID__216__11___" gradientUnits="userSpaceOnUse" x1="45.277" y1="-843.077" x2="54.937" y2="-843.077" gradientTransform="rotate(-112.942 337.362 -394.921)">
+              <stop offset="0.23" style="stop-color: rgb(170, 91, 239);"></stop>
+              <stop offset="0.491" style="stop-color: rgb(168, 88, 238);"></stop>
+              <stop offset="0.66" style="stop-color: rgb(162, 80, 233);"></stop>
+              <stop offset="0.803" style="stop-color: rgb(150, 65, 225);"></stop>
+              <stop offset="0.931" style="stop-color: rgb(135, 44, 215);"></stop>
+              <stop offset="1" style="stop-color: rgb(124, 29, 207);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__216__11___)" d="M46.633 45.154c-9.279 5.532-13.838-3.579-20.066-1.836 8.585-3.634 11.992 4.042 20.066 1.836z"></path>
+            <lineargradient id="___SVG_ID__216__12___" gradientUnits="userSpaceOnUse" x1="118.648" y1="170.697" x2="127.329" y2="170.697" gradientTransform="rotate(27.834 398.14 -104.52)">
+              <stop offset="0" style="stop-color: rgb(255, 0, 14);"></stop>
+              <stop offset="1" style="stop-color: rgb(184, 0, 0);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__216__12___)" d="M30.631 11.526c-.01-1.621-6.936-4.144-9.043.269-.15.312.072-1.586-.137-1.365 1.871-5.303 10.778-1.937 10.049-.552-.797 1.506-.076.142-.869 1.648z"></path>
+            <lineargradient id="___SVG_ID__216__13___" gradientUnits="userSpaceOnUse" x1="119.299" y1="-894.56" x2="128.224" y2="-894.56" gradientTransform="scale(1 -1) rotate(-27.834 1866.198 -257.828)">
+              <stop offset="0" style="stop-color: rgb(207, 0, 0);"></stop>
+              <stop offset="1" style="stop-color: rgb(255, 0, 14);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__216__13___)" d="M31.5 9.878C29.559 11.423 24.898 5.676 25.902 2c-3.322 4.537 1.664 10.722 4.381 10.184.66-.131.42-.8 1.217-2.306z"></path>
+            <lineargradient id="___SVG_ID__216__14___" gradientUnits="userSpaceOnUse" x1="118.602" y1="178.124" x2="127.279" y2="178.124" gradientTransform="rotate(27.834 398.14 -104.52)">
+              <stop offset="0" style="stop-color: rgb(255, 0, 14);"></stop>
+              <stop offset="1" style="stop-color: rgb(184, 0, 0);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__216__14___)" d="M27.209 17.9c-.01-1.617-6.775-4.511-9.631.399-.178.305.662-1.72.453-1.492 1.869-5.305 10.779-1.939 10.047-.555l-.869 1.648z"></path>
+            <lineargradient id="___SVG_ID__216__15___" gradientUnits="userSpaceOnUse" x1="119.267" y1="-902.434" x2="128.156" y2="-902.434" gradientTransform="scale(1 -1) rotate(-27.834 1866.198 -257.828)">
+              <stop offset="0" style="stop-color: rgb(207, 0, 0);"></stop>
+              <stop offset="1" style="stop-color: rgb(255, 0, 14);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__216__15___)" d="M28.078 16.253c-1.982 1.396-6.928-3.308-6.063-6.92-3.703 4.949 2.367 9.947 4.846 9.226.645-.189.424-.8 1.217-2.306z"></path>
+            <lineargradient id="___SVG_ID__216__16___" gradientUnits="userSpaceOnUse" x1="119.13" y1="-915.176" x2="128.307" y2="-915.176" gradientTransform="scale(1 -1) rotate(-27.834 1866.198 -257.828)">
+              <stop offset="0" style="stop-color: rgb(207, 0, 0);"></stop>
+              <stop offset="1" style="stop-color: rgb(255, 0, 14);"></stop>
+            </lineargradient>
+            <path fill="url(#___SVG_ID__216__16___)" d="M18.396 16.014c-5.986 8.337 2.266 13.393.111 19.147 4.136-7.834-2.851-11.681-.111-19.147z"></path>
+            <polygon fill="#E635DE" points="27.957,28.04 28.477,25.511 26.496,23.856 29.061,23.569 30.023,21.174 31.088,23.525 33.662,23.7 31.758,25.439 32.385,27.942 30.143,26.668"></polygon>
+            <polygon fill="#3CC3EC" points="57.719,25.979 58.039,24.422 56.82,23.404 58.398,23.227 58.99,21.752 59.646,23.199 61.232,23.308 60.059,24.379 60.447,25.92 59.066,25.136"></polygon>
+            <polygon fill="#A6E639" points="35.057,8.673 36.219,7.245 35.514,5.545 37.23,6.211 38.631,5.014 38.527,6.853 40.098,7.813 38.318,8.284 37.891,10.076 36.893,8.529"></polygon>
+            <polygon fill="#E81C27" points="38.779,41.516 39.943,40.089 39.238,38.389 40.955,39.054 42.354,37.857 42.25,39.696 43.822,40.657 42.041,41.128 41.613,42.919 40.617,41.372"></polygon>
+            <polygon fill="#A6E639" points="34.918,35.706 36.426,38.446 34.221,40.649 33.166,37.793"></polygon>
+            <polygon fill="#3CC3EC" points="23.082,29.462 24.59,32.202 22.387,34.407 21.33,31.55"></polygon>
+            <polygon fill="#E81C27" points="51.395,28.899 49.568,30.885 47.162,29.688 49.207,28.04"></polygon>
+            <polygon fill="#E635DE" points="15.611,6.738 17.914,9.075 16.318,11.928 14.438,9.345"></polygon>
+            <polygon fill="#A6E639" points="51.582,48.358 49.189,49.603 47.334,47.658 49.818,46.805"></polygon>
+          </svg></div>
+      </div>
+    </button><button type="button" class="picker reaction-simple-picker__block reaction-simple-picker__block--reaction ax-outline" tabindex="0" data-tooltip="More" data-a-l="5-0-6" data-a-walk-policy="207" data-a-l-list-info="5-0-0,5-0-6">
+      <div class="reaction-simple-picker__tooltip-wrapper" data-tooltip="More" data-a-l="5-0-6" data-a-walk-policy="207" data-a-l-list-info="5-0-0,5-0-6">
+        <div class="reaction-simple-picker__content-wrapper"><svg width="16" height="4" viewBox="0 0 16 4" xmlns="http://www.w3.org/2000/svg" class="lazy-svg-icon__icon lazy-icon-icons/more" fill="#F5F5F5">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M3.499 2a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm6 0a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm4.502 1.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path>
+          </svg></div>
+      </div>
+    </button></div>
+  <div class="reaction-simple-picker__row reaction-simple-picker__row--last"><button type="button" class="picker reaction-simple-picker__block reaction-simple-picker__block--raise-hand reaction-simple-picker__block--first ax-outline" tabindex="0" data-a-l="5-2-0" data-a-walk-policy="207" data-a-l-list-info="5-2-0,5-2-0">
+      <div class="reaction-simple-picker__tooltip-wrapper" data-a-l="5-2-0" data-a-walk-policy="207" data-a-l-list-info="5-2-0,5-2-0">
+        <div class="reaction-simple-picker__content-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="lazy-svg-icon__icon lazy-icon-nvf/270b" viewBox="0 0 64 64">
+            <path fill="#FDCA47" d="M51.395 32c-7.891 0-7.449 6-11.395 6v-4H8v10c0 9.188 3.947 18 15.779 18 19.725 0 17.752-18 31.561-26 1.711-.992-.008-4-3.945-4z"></path>
+            <path fill="#CC9200" d="M51.395 32c-.473 0-.91.023-1.326.064 3.436.33 4.877 3.004 3.271 3.936-13.508 7.826-11.928 25.213-30.316 25.964.255.009.494.036.757.036 19.723 0 17.75-18 31.559-26 1.711-.992-.008-4-3.945-4z"></path>
+            <path fill="#FDCA47" d="M32 10.043V38h8V10.043c0-5.391-8-5.391-8 0zm-8-3.998V38h8V6.045c0-5.393-8-5.393-8 0zm-8 1.999V38h8V8.044c0-5.391-8-5.391-8 0zm-8 8.001V40h8V16.045c0-5.393-8-5.393-8 0z"></path>
+            <path fill="#CC9200" d="M35.004 6.129c1.613.379 3 1.674 3 3.914V38H40V10.043c0-3.15-2.727-4.444-4.996-3.914zM27 2.115c1.617.379 3.002 1.674 3.002 3.916V30H32V6.031c0-3.152-2.727-4.446-5-3.916zm-8 2.003c1.617.377 3.002 1.671 3.002 3.912V30H24V8.03c0-3.15-2.727-4.446-5-3.912zm-7.998 7.999c1.615.378 3.002 1.672 3.002 3.914V32H16V16.031c0-3.15-2.727-4.447-4.998-3.914z"></path>
+            <path fill="#CC9200" d="M40 36h-2c-3.824 1.178-10 6-10 13.675C30.043 42.814 36 38 40 38v-2zm-22.5-4s-2 0-5.5 2c0 0 3-2.5 3-6 .5 4 2.5 4 2.5 4zm8-.5s-3-.5-5.5.5c0 0 2.5-1.5 3-5.5.5 4 2.5 5 2.5 5zm8.5.5s-2-1.5-5.5-.5c0 0 2.5-1.5 2.5-5.5 0 4 3 6 3 6z"></path>
+          </svg>Raise Hand</div>
+      </div>
+    </button></div>
+</div>
+
+<div class="nonverbal-feedback-container--emoji-only inherited-styles-for-exported-element">
+  <div class="emoji-container">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="lazy-svg-icon__icon lazy-icon-nvf/270b" viewBox="0 0 64 64"><path fill="#FDCA47" d="M51.395 32c-7.891 0-7.449 6-11.395 6v-4H8v10c0 9.188 3.947 18 15.779 18 19.725 0 17.752-18 31.561-26 1.711-.992-.008-4-3.945-4z"></path><path fill="#CC9200" d="M51.395 32c-.473 0-.91.023-1.326.064 3.436.33 4.877 3.004 3.271 3.936-13.508 7.826-11.928 25.213-30.316 25.964.255.009.494.036.757.036 19.723 0 17.75-18 31.559-26 1.711-.992-.008-4-3.945-4z"></path><path fill="#FDCA47" d="M32 10.043V38h8V10.043c0-5.391-8-5.391-8 0zm-8-3.998V38h8V6.045c0-5.393-8-5.393-8 0zm-8 1.999V38h8V8.044c0-5.391-8-5.391-8 0zm-8 8.001V40h8V16.045c0-5.393-8-5.393-8 0z"></path><path fill="#CC9200" d="M35.004 6.129c1.613.379 3 1.674 3 3.914V38H40V10.043c0-3.15-2.727-4.444-4.996-3.914zM27 2.115c1.617.379 3.002 1.674 3.002 3.916V30H32V6.031c0-3.152-2.727-4.446-5-3.916zm-8 2.003c1.617.377 3.002 1.671 3.002 3.912V30H24V8.03c0-3.15-2.727-4.446-5-3.912zm-7.998 7.999c1.615.378 3.002 1.672 3.002 3.914V32H16V16.031c0-3.15-2.727-4.447-4.998-3.914z"></path><path fill="#CC9200" d="M40 36h-2c-3.824 1.178-10 6-10 13.675C30.043 42.814 36 38 40 38v-2zm-22.5-4s-2 0-5.5 2c0 0 3-2.5 3-6 .5 4 2.5 4 2.5 4zm8-.5s-3-.5-5.5.5c0 0 2.5-1.5 3-5.5.5 4 2.5 5 2.5 5zm8.5.5s-2-1.5-5.5-.5c0 0 2.5-1.5 2.5-5.5 0 4 3 6 3 6z"></path></svg>
+  </div>
+</div>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Function to load translations from a JSON file
+    async function loadTranslations() {
+        try {
+            const response = await fetch('/assets/translations.json');
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const translations = await response.json();
+            
+            // Extract the language code from the URL hash
+            let lang = 'en'; // Default language
+            const supportedLanguages = Object.keys(translations); // ['en', 'pt', 'fr', 'ru', 'ja', 'br', ...]
+    
+            // Get the language code from the hash, stripping the '#' symbol
+            const hashLang = window.location.hash.substring(1).toLowerCase();
+            if (supportedLanguages.includes(hashLang)) {
+                lang = hashLang;
+            }
+    
+            // Check if translations for the selected language exist
+            if (!translations[lang]) {
+                console.warn(`No translations found for language: ${lang}`);
+                return;
+            }
+            const languageData = translations[lang];
+    
+            // Update the Reactions button label using the "reactions_button" key
+            document.querySelectorAll('.footer-button-base__button-label').forEach(el => {
+                if (el.textContent.trim() === 'Reactions') {
+                    el.textContent = languageData.reactions_button || el.textContent;
+                }
+            });
+    
+            // Update the Raise Hand button label using the "raise_hands" key
+            document.querySelectorAll('.reaction-simple-picker__content-wrapper').forEach(el => {
+                if (el.textContent.trim() === 'Raise Hand') {
+                    el.textContent = languageData.raise_hands || el.textContent;
+                }
+            });
+    
+        } catch (error) {
+            console.error('Error loading translations:', error);
+        }
+    }
+    
+    // Run the function to load and apply translations
+    loadTranslations();
+    
+    // Re-apply translations when the hash changes
+    window.addEventListener('hashchange', loadTranslations);
+});
+
+    function togglePicker() {
+        const picker = document.getElementById('reactionPicker');
+        const buttonWrapper = document.getElementById('buttonWrapper');
+
+        picker.style.opacity = '1';
+    }
+
+    // Hide the picker when clicking outside of it
+    document.addEventListener('click', function (event) {
+        const picker = document.getElementById('reactionPicker');
+        const buttonWrapper = document.getElementById('buttonWrapper');
+        if (!picker.contains(event.target) && !buttonWrapper.contains(event.target)) {
+            picker.style.opacity = '0';
+        }
+    });
+
+    // Start the cursor at the bottom center of the screen
+    const cursor = document.querySelector(".simulated-cursor");
+    cursor.style.transform = `translate(${window.innerWidth / 2}px, ${window.innerHeight - 30}px)`;
+
+    // Simulate click on the buttonWrapper button
+    const buttonWrapper = document.getElementById('buttonWrapper');
+    const buttonRect = buttonWrapper.getBoundingClientRect();
+
+    setTimeout(() => {
+        // Move cursor to the buttonWrapper
+        cursor.style.transform = `translate(${buttonRect.left + window.pageXOffset + 45}px, ${buttonRect.top + window.pageYOffset + 15}px)`;
+
+        // Simulate click
+        setTimeout(() => {
+          document.querySelector('.button-wrapper').classList.add('active');
+          setTimeout(() => {
+            buttonWrapper.click();
+          }, 300)
+        }, 1000)
+
+        // Remove the 'active' class after a short delay
+        setTimeout(() => {
+            buttonWrapper.classList.remove('active');
+
+            // Proceed with the animation inside the setTimeout 3000 block
+            setTimeout(() => {
+                const elements = document.querySelectorAll(".reaction-simple-picker__block");
+
+              const element = elements[7] // raise hands;
+              const rect = element.getBoundingClientRect();
+
+              // Simulate the cursor moving
+              cursor.style.transform = `translate(${rect.left + window.pageXOffset + 185}px, ${rect.top + window.pageYOffset + 15}px)`;
+
+              setTimeout(() => {
+                // Add the hover class to the current element
+                element.classList.add('hovered');
+                element.querySelector('.reaction-simple-picker__tooltip-wrapper').classList.add('hovered');
+              }, 1000)
+
+              setTimeout(() => {
+                document.querySelectorAll('button.picker')[7].classList.add('active')
+                setTimeout(() => {
+                  const picker = document.getElementById('reactionPicker');
+                  picker.style.opacity = '0';
+                  document.querySelector('.nonverbal-feedback-container--emoji-only').style.opacity = '1'
+                  setTimeout(() => {
+                    cursor.style.transform = `translate(${window.innerWidth / 2}px, ${window.innerHeight - 30}px)`;
+                  }, 200)
+                }, 200)
+              }, 4000)
+            }, 1500);
+
+        }, 200); // Delay for removing 'active' class
+
+    }, 2000); // Delay for the initial move and click on the buttonWrapper
+</script>
+
+
+
+</body></html>
