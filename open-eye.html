@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: transparent;
+    height: 100%;
+  }
+  .eyelid {
+    position: absolute;
+    left: -50px;
+    width: 110%;
+    height: 57%;
+    background-color: #000;
+    filter: blur(15px);
+    transition: transform 2s ease-in-out;
+  }
+  .top {
+    top: 0;
+    transform: translateY(-5%); /* mulai dari kondisi tertutup */
+  }
+  .bottom {
+    bottom: 0;
+    transform: translateY(5%);
+  }
+  /* animasi kebalikan: dari tertutup -> terbuka, tetap dengan efek "sleepy" */
+  @keyframes sleepyOpen {
+    0%   { transform: translateY(-5%); }      /* mulai tertutup */
+    45%  { transform: translateY(-60%); }     /* sedikit menutup lagi (kedip) */
+    60%  { transform: translateY(-20%); }     /* mulai membuka */
+    100% { transform: translateY(-105%); }    /* terbuka penuh */
+  }
+  @keyframes sleepyOpenBottom {
+    0%   { transform: translateY(5%); }
+    45%  { transform: translateY(60%); }
+    60%  { transform: translateY(20%); }
+    100% { transform: translateY(105%); }
+  }
+  .animate-top {
+    animation: sleepyOpen 8s ease-in-out forwards;
+  }
+  .animate-bottom {
+    animation: sleepyOpenBottom 8s ease-in-out forwards;
+  }
+</style>
+</head>
+<body>
+  <div id="top" class="eyelid top"></div>
+  <div id="bottom" class="eyelid bottom"></div>
+  <script>
+    // Mulai animasi otomatis setelah 1 detik
+    setTimeout(() => {
+      document.getElementById('top').classList.add('animate-top');
+      document.getElementById('bottom').classList.add('animate-bottom');
+    }, 1000);
+  </script>
+</body>
+</html>
